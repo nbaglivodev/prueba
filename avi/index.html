@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css">
+  <link rel="stylesheet" href="css/materialize-stepper.min.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://unpkg.com/vue"></script>
+  
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
+  <script src="js/materialize-stepper.min.js"></script>
+  <script src="js/utmconverter.js"></script>
+  <script src="js/numjs.js"></script>
+  <script src="js/tesis.js"></script>
+  <script src="js/tokml.js"></script>
+  <script src="js/main.js"></script>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title></title>
+</head>
+
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Obstacle Evaluation Tool</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="collapsible.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="app">
+    <div class="stepper-wrapper">
+    <ul class="stepper horizontal">
+      <li class="step active">
+        <div class="step-title waves-effect">Inputs</div>
+        <div class="step-content">
+
+        <div class="form-content">
+          <div class="section-title">Approach</div>
+          <div class="form-row">
+            <div class="aprox-type">
+              <span v-for="a in approachTypes">
+                <input class="with-gap" name="a" type="radio" :id="a.label" :value='a' v-model="approach"/>
+                <label :for="a.label" >{{a.label}}</label>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-field">
+              <select v-model="code">
+                <option value="" disabled selected>Code number</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+            <div class="input-field" style="min-width: 260px">
+              <input id="runwator" type="text" class="validate" v-model="alpha">
+              <label for="runwator">Runway orientation (degrees)</label>
+            </div>
+            <div class="switch">
+              <label>
+                <input type="checkbox">
+                <span class="lever"></span>
+                Runway meant for take-off
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col s8 m6">
+              <div class="section-title">Threshold 1</div>
+              <div class="form-row">
+                <div class="input-field">
+                  <input id="t1x" type="text" v-model="thresholdOne.x" class="validate">
+                  <label for="t1x">X (dd)</label>
+                </div>
+                <div class="input-field">
+                  <input id="t1x" type="text" v-model="thresholdOne.y" class="validate">
+                  <label for="t1x">Y (dd)</label>
+                </div>
+                <div class="input-field">
+                  <input id="t1z" type="text" v-model="thresholdOne.z" class="validate">
+                  <label for="t1z">Z (m)</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col s4">
+              <div class="section-title">Threshold 2</div>
+              <div class="form-row">
+                <div class="input-field">
+                  <input id="t2z" type="text" v-model="thresholdTwo.z" class="validate">
+                  <label for="t2z">Z (m)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col s8 m6">
+              <div class="section-title">Inner Horizontal Surface Reference Points</div>
+              <div class="form-row">
+                <div class="input-field">
+                  <input id="ihsx1" type="text" class="validate">
+                  <label for="ihsx1">X1 (dd)</label>
+                </div>
+                 <div class="input-field">
+                  <input id="ihsx1" type="text" class="validate">
+                  <label for="ihsx1">Y1 (dd)</label>
+                </div>
+                <div class="input-field">
+                  <input id="rpx1" type="text" class="validate">
+                  <label for="rpx1">X2 (dd)</label>
+                </div>
+                <div class="input-field">
+                  <input id="rpx1" type="text" class="validate">
+                  <label for="rpx1">Y2 (dd)</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col s4">
+              <div class="section-title">Elevation datum</div>
+              <div class="form-row">
+                <div class="input-field">
+                  <input id="rpx1" type="text" v-model="elev" class="validate">
+                  <label for="rpx1">value (m)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col s12">
+              <div class="section-title">Declared distances</div>
+              <div class="form-row">
+                <div class="input-field">
+                  <input id="ihsx1" type="text" v-model="distances.tora" class="validate">
+                  <label for="ihsx1">TORA (m)</label>
+                </div>
+                <div class="input-field">
+                  <input id="ihsx1" type="text" v-model="distances.tdda" class="validate">
+                  <label for="ihsx1">TDDA (m)</label>
+                </div>
+                <div class="input-field">
+                  <input id="ihsx1" type="text" v-model="distances.lda" class="validate">
+                  <label for="ihsx1">LDA (m)</label>
+                </div>
+                <div class="input-field">
+                  <input id="ihsx1" type="text" v-model="distances.asda" class="validate">
+                  <label for="ihsx1">ASDA (m)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col s12">
+              <div class="section-title">Runway strip</div>
+              <div class="form-row">
+                <div class="input-field">
+                  <input id="ihsx1" type="text" class="validate" v-model="strip.length">
+                  <label for="ihsx1">Length (m)</label>
+                </div>
+                <div class="input-field">
+                  <input id="ihsx1" type="text" class="validate" v-model="strip.width">
+                  <label for="ihsx1">Width (m)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button class="waves-effect waves-dark btn next-step">CONTINUE</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="step">
+          <div class="step-title waves-effect">OLS to Plot</div>
+          <div class="step-content">
+            <div class="form-content">
+              <div class="row">
+                <div class="col s3 plot-type" v-for="plot in plots">
+                  <input type="checkbox" :id="plot.label" :disabled="!showPlot(plot)"/>
+                  <label :for="plot.label">{{plot.label}} Surface</label>
+                </div>
+              </div>
+              <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step" data-feedback="generatePlot">CONTINUE</button>
+                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+              </div>
+            </div>
+          </div>
+      </li>
+
+      <li class="step">
+          <div class="step-title waves-effect">Plot</div>
+          <div class="step-content">
+            <div id="plot" class="plot-container"></div>
+            <div class="step-actions">
+              <button class="waves-effect waves-dark btn" @click="generateKML()">DOWNLOAD KML</button>
+            </div>
+          </div>
+      </li>
+    </ul>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text"></h5>
+          <p class="grey-text text-lighten-4"></p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container made-with">
+        Made with <i class="material-icons">favorite</i> in La Plata.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
